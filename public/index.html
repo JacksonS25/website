@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>My Developer Portfolio</title>
+</head>
+<body class="bg-gray-900 text-white font-sans p-8 md:p-16">
+    <div class="max-w-4xl mx-auto">
+        <header class="mb-12">
+            <h1 class="text-4xl font-bold mb-2">Live Code Portfolio</h1>
+            <p class="text-gray-400">Run my backend projects directly from the browser.</p>
+        </header>
+
+        <!-- Project Card -->
+        <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-semibold">Python Data Analyzer</h2>
+                <button onclick="runProject('python-scraper')" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-6 rounded-lg transition duration-200">
+                    Run Script
+                </button>
+            </div>
+            <p class="text-gray-400 text-sm mb-6">Executes a Python script on the server and returns the parsed data.</p>
+            
+            <!-- Web Terminal Output -->
+            <div class="bg-black p-4 rounded-lg border border-gray-700">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    <span class="text-gray-500 text-xs ml-2 font-mono">server-output.log</span>
+                </div>
+                <pre id="output" class="text-green-400 font-mono text-sm mt-2 min-h-[120px] whitespace-pre-wrap">Awaiting execution...</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function runProject(name) {
+            const outputEl = document.getElementById('output');
+            outputEl.innerText = "Executing on server...\n";
+            try {
+                const response = await fetch(`/api/run/${name}`, { method: 'POST' });
+                const text = await response.text();
+                outputEl.innerText = text;
+            } catch (err) {
+                outputEl.innerText = "Failed to connect to server: " + err;
+            }
+        }
+    </script>
+</body>
+</html>
