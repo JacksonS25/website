@@ -1,5 +1,5 @@
 # Use the newer 'bookworm' (Debian 12) environment
-FROM golang:1.22-bookworm
+FROM golang:1.27-bookworm
 
 # Install Python and pip
 RUN apt-get update && apt-get install -y python3 python3-pip
