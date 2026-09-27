@@ -13,14 +13,52 @@
         </header>
 
         <!-- Project Card -->
-        <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-2xl font-semibold">Python Data Analyzer</h2>
-                <button onclick="runProject('python-scraper')" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-6 rounded-lg transition duration-200">
-                    Run Script
-                </button>
-            </div>
-            <p class="text-gray-400 text-sm mb-6">Executes a Python script on the server and returns the parsed data.</p>
+        <!-- Inside the Project Card you want to modify -->
+<div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700 mt-6">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-semibold">PDF Processor</h2>
+        <button onclick="runProjectWithInput('github-tool', 'pdf-inputs')" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-6 rounded-lg transition duration-200">
+            Run Script
+        </button>
+    </div>
+    
+    <!-- NEW: Input Field -->
+    <div class="mb-6">
+        <label for="pdf-inputs" class="block text-sm font-medium text-gray-400 mb-2">PDF Filenames (comma separated)</label>
+        <input type="text" id="pdf-inputs" placeholder="file1.pdf, file2.pdf, data.pdf" 
+               class="w-full bg-gray-900 border border-gray-700 text-white rounded-lg p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+    </div>
+    <p class="text-gray-400 text-sm mb-6">Processes the specified PDF files.</p>
+</div>
+
+<!-- ... (Web Terminal Output HTML stays the same) ... -->
+
+<script>
+    // NEW: Modified function to handle inputs
+    async function runProjectWithInput(name, inputId) {
+        const outputEl = document.getElementById('output');
+        
+        // Get the value typed into the input field
+        const inputValue = document.getElementById(inputId).value;
+        
+        outputEl.innerText = "Executing on server...\n";
+        
+        try {
+            // We now send the input data in the body of a POST request
+            const response = await fetch(`/api/run/${name}`, { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ args: inputValue })
+            });
+            const text = await response.text();
+            outputEl.innerText = text;
+        } catch (err) {
+            outputEl.innerText = "Failed to connect to server: " + err;
+        }
+    }
+</script>
             
             <!-- Web Terminal Output -->
             <div class="bg-black p-4 rounded-lg border border-gray-700">
