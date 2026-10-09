@@ -177,7 +177,7 @@
                 span.className = 'text-emerald-400/90';
             }
             
-            span.innerText = text + '\\n';
+            span.innerText = text + '\n';
             outputEl.appendChild(span);
             
             outputEl.parentElement.scrollTop = outputEl.parentElement.scrollHeight;
@@ -197,7 +197,7 @@
             const args = document.getElementById('cmd-args').value;
             const proj = projects[selectedProjectId];
             
-            appendToTerminal(`\\n$ ${proj.prefix} ${args}`, 'system');
+            appendToTerminal(`\n$ ${proj.prefix} ${args}`, 'system');
             appendToTerminal('Executing on server...', 'system');
             
             const runBtn = document.getElementById('run-btn');
