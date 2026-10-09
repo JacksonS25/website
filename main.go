@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 	"os/exec"
 	"strings"
 
@@ -49,6 +50,19 @@ func main() {
 			// (python3 is the executable, commandArgs contains the script and the arguments)
 			cmd = exec.Command("python3", commandArgs...)
 
+		case "example_project":
+			commandArgs := []string{}
+			if strings.TrimSpace(req.Args) != "" {
+				inputs := strings.Split(req.Args, " ")
+				for _, input := range inputs {
+					cleanedInput := strings.TrimSpace(input)
+					if cleanedInput != "" {
+						commandArgs = append(commandArgs, cleanedInput)
+					}
+				}
+			}
+			cmd = exec.Command("uname", commandArgs...)
+
 		default:
 			return c.Status(404).SendString("Project not found")
 		}
@@ -61,5 +75,9 @@ func main() {
 		return c.SendString(string(out))
 	})
 
-	log.Fatal(app.Listen(":3000"))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
+	log.Fatal(app.Listen(":" + port))
 }

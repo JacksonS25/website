@@ -2,89 +2,246 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Jackson's Coding Wonderland</title>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1f2937; 
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #4b5563; 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #6b7280; 
+        }
+    </style>
 </head>
-<body class="bg-gray-900 text-white font-sans p-8 md:p-16">
-    <div class="max-w-4xl mx-auto">
-        <header class="mb-12">
-            <h1 class="text-4xl font-bold mb-2">Jackson's Coding Wonderland</h1>
-            <p class="text-gray-400">Run my backend projects directly from the browser.</p>
+<body class="bg-slate-950 text-slate-200 font-sans min-h-screen flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="w-full max-w-4xl space-y-8">
+        
+        <!-- Header -->
+        <header class="text-center space-y-4">
+            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">
+                Jackson's Coding Wonderland
+            </h1>
+            <p class="text-lg text-slate-400 max-w-2xl mx-auto">
+                Seamlessly interact with your backend projects through a unified, elegant command interface.
+            </p>
         </header>
 
-        <!-- Project Card -->
-        <!-- Inside the Project Card you want to modify -->
-<div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700 mt-6">
-    <div class="flex justify-between items-center mb-4">
-        <h2 class="text-2xl font-semibold">PDF Processor</h2>
-        <button onclick="runProjectWithInput('song_set_maker', 'pdf-inputs')" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-6 rounded-lg transition duration-200">
-            Run Script
-        </button>
-    </div>
-    
-    <!-- NEW: Input Field -->
-    <div class="mb-6">
-        <label for="pdf-inputs" class="block text-sm font-medium text-gray-400 mb-2">PDF Filenames (comma separated)</label>
-        <input type="text" id="pdf-inputs" placeholder="file1.pdf, file2.pdf, data.pdf" 
-               class="w-full bg-gray-900 border border-gray-700 text-white rounded-lg p-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
-    </div>
-    <p class="text-gray-400 text-sm mb-6">Combine PDF's into a single PDF document. Use case: Creating a set list for a performance. E.g. song_name, song_name, output_name, email</p>
-</div>
-
-<!-- ... (Web Terminal Output HTML stays the same) ... -->
-
-<script>
-    // NEW: Modified function to handle inputs
-    async function runProjectWithInput(name, inputId) {
-        const outputEl = document.getElementById('output');
-        
-        // Get the value typed into the input field
-        const inputValue = document.getElementById(inputId).value;
-        
-        outputEl.innerText = "Executing on server...\n";
-        
-        try {
-            // We now send the input data in the body of a POST request
-            const response = await fetch(`/api/run/${name}`, { 
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ args: inputValue })
-            });
-            const text = await response.text();
-            outputEl.innerText = text;
-        } catch (err) {
-            outputEl.innerText = "Failed to connect to server: " + err;
-        }
-    }
-</script>
+        <!-- Main Interface -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
             
-            <!-- Web Terminal Output -->
-            <div class="bg-black p-4 rounded-lg border border-gray-700">
-                <div class="flex items-center gap-2 mb-2">
-                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                    <span class="text-gray-500 text-xs ml-2 font-mono">server-output.log</span>
+            <!-- Top Bar -->
+            <div class="bg-slate-800/50 border-b border-slate-800 px-6 py-4 flex items-center justify-between">
+                <div class="flex space-x-2">
+                    <div class="w-3 h-3 rounded-full bg-rose-500/80"></div>
+                    <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
+                    <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
                 </div>
-                <pre id="output" class="text-green-400 font-mono text-sm mt-2 min-h-[120px] whitespace-pre-wrap">Awaiting execution...</pre>
+                <div class="text-xs font-mono text-slate-500 uppercase tracking-wider">Control Panel</div>
+            </div>
+
+            <div class="p-6 md:p-8 space-y-8">
+                
+                <!-- Project Selection -->
+                <div class="space-y-3">
+                    <label class="block text-sm font-semibold text-slate-300 uppercase tracking-wide">1. Select Project</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3" id="project-buttons">
+                        <!-- Buttons injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Command Input -->
+                <div class="space-y-3">
+                    <label class="block text-sm font-semibold text-slate-300 uppercase tracking-wide">2. Configure Command</label>
+                    
+                    <div class="relative group">
+                        <div class="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+                        <div class="relative flex items-stretch bg-slate-950 rounded-xl overflow-hidden border border-slate-700/50 shadow-inner">
+                            <div class="flex items-center px-4 bg-slate-900 border-r border-slate-800 select-none overflow-hidden max-w-[40%] sm:max-w-[50%]">
+                                <span class="text-emerald-400 font-mono text-sm mr-2 shrink-0">$</span>
+                                <span id="cmd-prefix" class="text-indigo-300 font-mono text-sm whitespace-nowrap overflow-hidden text-ellipsis truncate">select_project</span>
+                            </div>
+                            <input type="text" id="cmd-args" placeholder="Enter arguments here..." 
+                                class="flex-1 bg-transparent text-slate-200 font-mono text-sm px-4 py-4 focus:outline-none placeholder-slate-600 min-w-0">
+                            <button id="run-btn" onclick="executeCommand()" 
+                                class="px-6 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-colors duration-200 flex items-center gap-2 shrink-0 border-l border-slate-700/50">
+                                <span>Run</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Dynamic Description -->
+                    <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50 mt-4">
+                        <p id="project-desc" class="text-sm text-slate-400 leading-relaxed">
+                            Please select a project to see its description and configure its execution.
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <!-- Terminal Output -->
+        <div class="bg-slate-950 rounded-2xl shadow-xl overflow-hidden border border-slate-800 flex flex-col h-[400px]">
+            <div class="bg-slate-900 border-b border-slate-800 px-4 py-3 flex items-center justify-between sticky top-0">
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <span class="text-sm font-mono text-slate-400">server-output.log</span>
+                </div>
+                <button onclick="clearTerminal()" class="text-xs text-slate-400 hover:text-white transition-colors bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded">Clear</button>
+            </div>
+            <div class="p-4 overflow-y-auto custom-scrollbar flex-1">
+                <pre id="output" class="text-emerald-400/90 font-mono text-sm whitespace-pre-wrap leading-relaxed break-words"></pre>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        async function runProject(name) {
+        const projects = {
+            song_set_maker: {
+                id: 'song_set_maker',
+                name: 'PDF Processor',
+                prefix: 'python3 ./projects/Song_Set_Maker/main.py',
+                desc: 'Combine PDFs into a single document. Provide a comma-separated list of arguments. E.g., song_name, song_name, output_name, email',
+                icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>'
+            },
+            example_project: {
+                id: 'example_project',
+                name: 'System Info',
+                prefix: 'uname',
+                desc: 'Prints system information. Try passing arguments like "-a" or "-r".',
+                icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>'
+            }
+        };
+
+        let selectedProjectId = null;
+
+        function renderButtons() {
+            const container = document.getElementById('project-buttons');
+            container.innerHTML = '';
+            
+            Object.values(projects).forEach(proj => {
+                const isSelected = selectedProjectId === proj.id;
+                const btn = document.createElement('button');
+                btn.onclick = () => selectProject(proj.id);
+                
+                const baseClasses = "flex items-center gap-3 px-4 py-3 rounded-xl border text-left transition-all duration-200 w-full";
+                const unselectedClasses = "bg-slate-800/50 border-slate-700/50 text-slate-400 hover:bg-slate-800 hover:border-slate-600 hover:text-slate-200";
+                const selectedClasses = "bg-indigo-600/10 border-indigo-500 text-indigo-300 ring-1 ring-indigo-500/50 shadow-[0_0_15px_rgba(99,102,241,0.1)]";
+                
+                btn.className = `${baseClasses} ${isSelected ? selectedClasses : unselectedClasses}`;
+                
+                btn.innerHTML = `
+                    <div class="${isSelected ? 'text-indigo-400' : 'text-slate-500'}">
+                        ${proj.icon}
+                    </div>
+                    <span class="font-medium">${proj.name}</span>
+                `;
+                
+                container.appendChild(btn);
+            });
+        }
+
+        function selectProject(id) {
+            selectedProjectId = id;
+            const proj = projects[id];
+            
+            document.getElementById('cmd-prefix').innerText = proj.prefix;
+            document.getElementById('project-desc').innerHTML = `
+                <span class="font-semibold text-slate-300">Description:</span> 
+                ${proj.desc}
+            `;
+            
+            document.getElementById('cmd-args').focus();
+            
+            renderButtons();
+        }
+
+        function appendToTerminal(text, type = 'normal') {
             const outputEl = document.getElementById('output');
-            outputEl.innerText = "Executing on server...\n";
+            const span = document.createElement('span');
+            
+            if (type === 'error') {
+                span.className = 'text-rose-400';
+            } else if (type === 'system') {
+                span.className = 'text-cyan-400';
+            } else {
+                span.className = 'text-emerald-400/90';
+            }
+            
+            span.innerText = text + '\\n';
+            outputEl.appendChild(span);
+            
+            outputEl.parentElement.scrollTop = outputEl.parentElement.scrollHeight;
+        }
+
+        function clearTerminal() {
+            document.getElementById('output').innerHTML = '';
+            appendToTerminal('Terminal cleared.', 'system');
+        }
+
+        async function executeCommand() {
+            if (!selectedProjectId) {
+                appendToTerminal('Error: Please select a project first.', 'error');
+                return;
+            }
+
+            const args = document.getElementById('cmd-args').value;
+            const proj = projects[selectedProjectId];
+            
+            appendToTerminal(`\\n$ ${proj.prefix} ${args}`, 'system');
+            appendToTerminal('Executing on server...', 'system');
+            
+            const runBtn = document.getElementById('run-btn');
+            const originalContent = runBtn.innerHTML;
+            runBtn.disabled = true;
+            runBtn.innerHTML = '<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+            
             try {
-                const response = await fetch(`/api/run/${name}`, { method: 'POST' });
+                const response = await fetch(`/api/run/${selectedProjectId}`, { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ args: args })
+                });
                 const text = await response.text();
-                outputEl.innerText = text;
+                
+                if (response.ok) {
+                    appendToTerminal(text);
+                } else {
+                    appendToTerminal(`Server Error [${response.status}]: ${text}`, 'error');
+                }
             } catch (err) {
-                outputEl.innerText = "Failed to connect to server: " + err;
+                appendToTerminal(`Network Error: ${err.message}`, 'error');
+            } finally {
+                runBtn.disabled = false;
+                runBtn.innerHTML = originalContent;
             }
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstProjectId = Object.keys(projects)[0];
+            if (firstProjectId) {
+                selectProject(firstProjectId);
+            }
+            
+            appendToTerminal('System ready. Awaiting commands...', 'system');
+            
+            document.getElementById('cmd-args').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    executeCommand();
+                }
+            });
+        });
     </script>
 </body>
 </html>
